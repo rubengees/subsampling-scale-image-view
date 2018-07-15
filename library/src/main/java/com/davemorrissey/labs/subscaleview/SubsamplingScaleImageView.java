@@ -181,6 +181,9 @@ public class SubsamplingScaleImageView extends View {
     // Whether tiles should be loaded while gestures and animations are still in progress
     private boolean eagerLoadingEnabled = true;
 
+    // Whether the exif interface should be used
+    private boolean exifInterfaceEnabled = true;
+
     // Gesture detection settings
     private boolean panEnabled = true;
     private boolean zoomEnabled = true;
@@ -1855,7 +1858,7 @@ public class SubsamplingScaleImageView extends View {
                     cursor.close();
                 }
             }
-        } else if (sourceUri.startsWith(ImageSource.FILE_SCHEME) && !sourceUri.startsWith(ImageSource.ASSET_SCHEME)) {
+        } else if (exifInterfaceEnabled && sourceUri.startsWith(ImageSource.FILE_SCHEME) && !sourceUri.startsWith(ImageSource.ASSET_SCHEME)) {
             try {
                 ExifInterface exifInterface = new ExifInterface(sourceUri.substring(ImageSource.FILE_SCHEME.length() - 1));
                 int orientationAttr = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
@@ -2682,6 +2685,23 @@ public class SubsamplingScaleImageView extends View {
             return new ImageViewState(getScale(), getCenter(), getOrientation());
         }
         return null;
+    }
+
+    /**
+     * Returns true if the exif interface is enabled.
+     * @return true if the exif interface is enabled.
+     */
+    public boolean isExifInterfaceEnabled() {
+        return exifInterfaceEnabled;
+    }
+
+    /**
+     * Enable or disable the exif interface.
+     * This may be useful if you want to have it apply rotation on your images.
+     * @param exifInterfaceEnabled true to enable the exif interface, false to disable.
+     */
+    public void setExifInterfaceEnabled(boolean exifInterfaceEnabled) {
+        this.exifInterfaceEnabled = exifInterfaceEnabled;
     }
 
     /**
